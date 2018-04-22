@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="StadiumModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Fullname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Reserves" Relationship="StadiumModel.FK_Reserves_Customers" FromRole="Customers" ToRole="Reserves" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityContainer Name="StadiumEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Customers" EntityType="Self.Customers" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="Stadiums" EntityType="StadiumModel.Stadiums" />
+    <EntitySet Name="Reserves" EntityType="StadiumModel.Reserves" />
+    <AssociationSet Name="FK_Reserves_Customers" Association="StadiumModel.FK_Reserves_Customers">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="Reserves" EntitySet="Reserves" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Reserves_Stadiums" Association="StadiumModel.FK_Reserves_Stadiums">
+      <End Role="Stadiums" EntitySet="Stadiums" />
+      <End Role="Reserves" EntitySet="Reserves" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Stadiums">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="İsCovered" Type="Byte" />
+    <NavigationProperty Name="Reserves" Relationship="StadiumModel.FK_Reserves_Stadiums" FromRole="Stadiums" ToRole="Reserves" />
+  </EntityType>
+  <EntityType Name="Reserves">
+    <Key>
+      <PropertyRef Name="İd" />
+    </Key>
+    <Property Name="İd" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SatdiumId" Type="Int32" />
+    <Property Name="StartTime" Type="Time" Precision="7" />
+    <Property Name="EndTime" Type="Time" Precision="7" />
+    <Property Name="Date" Type="DateTime" Precision="0" />
+    <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="CustomerId" Type="Int32" />
+    <NavigationProperty Name="Customers" Relationship="StadiumModel.FK_Reserves_Customers" FromRole="Reserves" ToRole="Customers" />
+    <NavigationProperty Name="Stadiums" Relationship="StadiumModel.FK_Reserves_Stadiums" FromRole="Reserves" ToRole="Stadiums" />
+  </EntityType>
+  <Association Name="FK_Reserves_Customers">
+    <End Type="StadiumModel.Customers" Role="Customers" Multiplicity="0..1" />
+    <End Type="StadiumModel.Reserves" Role="Reserves" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Reserves">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Reserves_Stadiums">
+    <End Type="StadiumModel.Stadiums" Role="Stadiums" Multiplicity="0..1" />
+    <End Type="StadiumModel.Reserves" Role="Reserves" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Stadiums">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Reserves">
+        <PropertyRef Name="SatdiumId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
